@@ -33,38 +33,67 @@ Meteor.methods({
   }
 });
 
-Meteor.methods({
-  getApiData(apiName, cookie, userHandle) {
-      check(apiName, String); 
-      check(cookie, String); 
-      check(userHandle, String); 
-      //console.log(userHandle);
-      //const sessionCookie = Session.get(userHandle);
+// Meteor.methods({
+//   getApiData(apiName, cookie, userHandle) {
+//       check(apiName, String); 
+//       check(cookie, String); 
+//       check(userHandle, String); 
+//       //console.log(userHandle);
+//       //const sessionCookie = Session.get(userHandle);
 
-      return new Promise((resolve, reject) => {
-          apiService.getApi(cookie, apiName, {}, userHandle, (error, result) => {
-              if (error) {
-                  reject(new Meteor.Error('get-api-error', 'Error fetching Get API data'));
-              } else {
-                  resolve(result);
-              }
-          });
-      });
+//       return new Promise((resolve, reject) => {
+//           apiService.getApi(cookie, apiName, {}, userHandle, (error, result) => {
+//               if (error) {
+//                   reject(new Meteor.Error('get-api-error', 'Error fetching Get API data'));
+//               } else {
+//                   resolve(result);
+//               }
+//           });
+//       });
+//   }
+// });
+Meteor.methods({
+  async getApiData(apiName, cookie, userHandle) {
+    check(apiName, String);
+    check(cookie, String);
+    check(userHandle, String);
+
+    try {
+      const result = await apiService.getApi(cookie, apiName, {}, userHandle);
+      return result;
+    } catch (error) {
+      throw new Meteor.Error('get-api-error', 'Error fetching Get API data', error);
+    }
   }
 });
-Meteor.methods({
-  putApiData(apiName, jsonData, cookie, userHandle) {
-      check(apiName, String);  // Validate apiName to ensure it's a string
+// Meteor.methods({
+//   putApiData(apiName, jsonData, cookie, userHandle) {
+//       check(apiName, String);  // Validate apiName to ensure it's a string
 
-      return new Promise((resolve, reject) => {
-          apiService.putApi(cookie, apiName, jsonData, userHandle, (error, result) => {
-              if (error) {
-                  reject(new Meteor.Error('get-api-error', 'Error fetching Get API data'));
-              } else {
-                  resolve(result);
-              }
-          });
-      });
+//       return new Promise((resolve, reject) => {
+//           apiService.putApi(cookie, apiName, jsonData, userHandle, (error, result) => {
+//               if (error) {
+//                   reject(new Meteor.Error('get-api-error', 'Error fetching Get API data'));
+//               } else {
+//                   resolve(result);
+//               }
+//           });
+//       });
+//   }
+// });
+Meteor.methods({
+  async putApiData(apiName, jsonData, cookie, userHandle) {
+    check(apiName, String);
+    check(jsonData, Object);  // Assuming jsonData is an object
+    check(cookie, String);
+    check(userHandle, String);
+
+    try {
+      const result = await apiService.putApi(cookie, apiName, jsonData, userHandle);
+      return result;
+    } catch (error) {
+      throw new Meteor.Error('put-api-error', 'Error updating data via PUT API', error);
+    }
   }
 });
 
