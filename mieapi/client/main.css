@@ -1,117 +1,242 @@
-html,
+/* Global Styles */
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #f0f4f8;
+  --text-color: #333;
+  --error-color: #e74c3c;
+  --success-color: #2ecc71;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
 body {
-  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  line-height: 1.6;
   margin: 0;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    Segoe UI,
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    Fira Sans,
-    Droid Sans,
-    Helvetica Neue,
-    sans-serif;
+  padding: 0;
 }
 
-* {
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Common Form Styles */
+input[type="text"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
   box-sizing: border-box;
+  font-size: 16px;
+  transition: var(--transition);
 }
 
-main {
-  padding: 5rem 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
 
-code {
-  background: #fafafa;
-  border-radius: 5px;
-  padding: 0.75rem;
-  font-family:
-    Menlo,
-    Monaco,
-    Lucida Console,
-    Courier New,
-    monospace;
-}
-
-input[type='button'] {
-  border: none;
-  background: cornflowerblue;
+button {
+  background-color: var(--primary-color);
   color: white;
-  padding: 12px 24px;
-  margin: 8px;
-  font-size: 24px;
-  border-radius: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--border-radius);
   cursor: pointer;
+  font-size: 16px;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 10px;
 }
 
-.mainContainer {
-  flex-direction: column;
+button:hover {
+  background-color: #3a7bc8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.error {
+  color: var(--error-color);
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* Home Component Styles */
+.home-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.welcome-message {
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.home-container form {
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Login Component Styles */
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
 }
 
 .titleContainer {
-  display: flex;
-  flex-direction: column;
-  font-size: 64px;
-  font-weight: bolder;
-  align-items: center;
-  justify-content: center;
-}
-
-.resultContainer,
-.historyItem {
-  flex-direction: row;
-  display: flex;
-  width: 400px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.historyContainer {
-  flex-direction: column;
-  display: flex;
-  height: 200px;
-  align-items: center;
-  flex-grow: 5;
-  justify-content: flex-start;
-}
-
-.buttonContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 260px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .inputContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.inputContainer>.errorLabel {
-  color: red;
-  font-size: 12px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 1rem;
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .inputBox {
-  height: 48px;
-  width: 400px;
-  font-size: large;
-  border-radius: 8px;
-  border: 1px solid grey;
-  padding-left: 8px;
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #dddfe2;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.inputBox:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.errorLabel {
+  color: var(--error-color);
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
+}
+
+/* API Component Styles */
+.api-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.api-container h2 {
+  color: var(--primary-color);
+  margin-top: 2rem;
+}
+
+.api-container pre {
+  background-color: #f1f1f1;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  overflow-x: auto;
+}
+
+.api-form {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.api-form label {
+  font-weight: bold;
+}
+
+/* Spinner */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-text {
+  margin-left: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .inputContainer, .api-container {
+    padding: 1rem;
+  }
+
+  .welcome-message {
+    font-size: 2rem;
+  }
+
+  .titleContainer {
+    font-size: 2rem;
+  }
 }

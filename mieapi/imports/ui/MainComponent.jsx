@@ -1,53 +1,75 @@
 import React, { useState, useEffect } from 'react';
+import { Session } from 'meteor/session';
 import ApiComponent from '../../client/components/apiComponent.jsx';
-import LoginComponent from './Login'
+import LoginComponent from './Login.jsx';
 import HomeComponent from "../../client/components/home.jsx";
-import {Session} from 'meteor/session'
-
 
 const MainComponent = () => {
-    const [credentials, setCredentials] = useState(null);
-    const [showApiComponent, setShowApiComponent] = useState(false);
-    const [cookie, setCookie ] = useState('');
-    const [userHandle, setUserHandle]  = useState(false);
+  const [credentials, setCredentials] = useState(null);
+  const [cookie, setCookie] = useState('');
+  const [userHandle, setUserHandle] = useState('');
+  const [currentPage, setCurrentPage] = useState('home');
 
-    console.log(credentials, showApiComponent, userHandle)
-    //const loginPageUrl = `https://${userHandle}.webchartnow.com/webchart.cgi/json`;
+  useEffect(() => {
+    const storedUserHandle = Session.get('userHandle');
+    const storedCookie = Session.get('userCookie');
 
-    useEffect(()=>{
+    console.log(storedUserHandle, storedCookie);
+    
+    if (storedUserHandle && storedCookie) {
+      setUserHandle(storedUserHandle);
+      setCookie(storedCookie);
+      setCurrentPage('api');
+    }
+  }, []);
 
-        //const storedCookie = localStorage.getItem("cookie");
-        setCookie(Session.get('userHandle'));
-        const storedUserHandle = Session.get('userHandle');
-        setUserHandle(storedUserHandle);
+  const handleSaveUserHandle = (newUserHandle) => {
+    setUserHandle(newUserHandle);
+    Session.set('userHandle', newUserHandle); // Do we need to save the session using userHandle ?
+    setCurrentPage('login');
+  };
 
-    }, [])
-    const handleSaveUserHandle = (userHandle) => {
-        setUserHandle(userHandle);
-        if (!cookie) {
-            //localStorage.setItem("userHandle", userHandle);\
-            Session.get(`${userHandle}`);
-        }
-    };
+  const handleLogin = (newCookie) => {
+    setCookie(newCookie);
+    Session.set('userCookie', newCookie); // need to check this ?
+    setCurrentPage('api');
+  };
 
-    return (
-        <div>
-            {userHandle ? (
-                cookie ? (
-                    <ApiComponent credentials={credentials} cookie={cookie} userHandle={userHandle} />
-                ) : (
-                    <LoginComponent 
-                        setShowApiComponent={setShowApiComponent} 
-                        setCredentials={setCredentials} 
-                        setCookie={setCookie}
-                        userHandle = {userHandle} 
-                    />
-                )
-            ) : (
-                <HomeComponent saveUserHandle={handleSaveUserHandle} />
-            )}
-        </div>
-    );
+  const handleLogout = () => {
+    setCookie('');
+    setUserHandle('');
+    Session.clear();
+    localStorage.clear();
+    setCurrentPage('home');
+  };
+
+  const renderPage = () => {
+    switch(currentPage) {
+      case 'home':
+        return <HomeComponent saveUserHandle={handleSaveUserHandle} />;
+      case 'login':
+        return <LoginComponent
+          setCredentials={setCredentials} // do we need this ??
+          onLogin={handleLogin}
+          userHandle={userHandle}
+        />;
+      case 'api':
+        return <ApiComponent 
+          credentials={credentials} // do we need this ??
+          cookie={cookie}
+          userHandle={userHandle}
+          onLogout={handleLogout}
+        />;
+      default:
+        return <HomeComponent saveUserHandle={handleSaveUserHandle} />;
+    }
+  };
+
+  return (
+    <div>
+      {renderPage()}
+    </div>
+  );
 };
 
 export default MainComponent;
