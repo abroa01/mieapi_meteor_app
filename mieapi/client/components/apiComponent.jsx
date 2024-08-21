@@ -17,7 +17,7 @@ const ApiComponent = ({ credentials, cookie, userHandle, onLogout }) => {
     }
     setIsLoading(true);
     setError(null);
-    try {
+    try {      
       const result = await new Promise((resolve, reject) => {
         Meteor.call('getApiData', apiName, cookie, userHandle, (error, result) => {
           if (error) reject(error);

@@ -54,12 +54,14 @@ Meteor.methods({
 // });
 Meteor.methods({
   async getApiData(apiName, cookie, userHandle) {
+    console.log(apiName, cookie, userHandle);
     check(apiName, String);
-    check(cookie, String);
+    check(cookie.sessionCookie, String);
     check(userHandle, String);
 
     try {
-      const result = await apiService.getApi(cookie, apiName, {}, userHandle);
+      const result = await apiService.getApi(cookie.sessionCookie, apiName, {}, userHandle);
+      console.log(result);
       return result;
     } catch (error) {
       throw new Meteor.Error('get-api-error', 'Error fetching Get API data', error);
@@ -85,11 +87,11 @@ Meteor.methods({
   async putApiData(apiName, jsonData, cookie, userHandle) {
     check(apiName, String);
     check(jsonData, Object);  // Assuming jsonData is an object
-    check(cookie, String);
+    check(cookie.sessionCookie, String);
     check(userHandle, String);
 
     try {
-      const result = await apiService.putApi(cookie, apiName, jsonData, userHandle);
+      const result = await apiService.putApi(cookie.sessionCookie, apiName, jsonData, userHandle);
       return result;
     } catch (error) {
       throw new Meteor.Error('put-api-error', 'Error updating data via PUT API', error);

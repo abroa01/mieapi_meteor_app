@@ -28,19 +28,16 @@ const Login = ({ onLogin, userHandle }) => {
     try {
       const result = await Meteor.callAsync('userLogin', userHandle, username, password);
       console.log('Result in Login is:', result);
-
-      if (result && typeof result === 'object') {
-        if (result.success && result.sessionCookie) {
-          Session.set(`${userHandle}_session`, result.sessionCookie);
-          onLogin(result.sessionCookie);
+      if (result.success) {
+          Session.set(`${userHandle}_session`, result);
+          console.log(Session.get(`${userHandle}_session`));
+          
+          onLogin(result);
         } else {
           alert(result.message || 'Invalid Credentials');
         }
-      } else {
-        console.error('Unexpected result format:', result);
-        alert('An error occurred during login');
-      }
-    } catch (error) {
+      } 
+      catch (error) {
       console.error('Error during login:', error);
       alert('An error occurred during login');
     } finally {

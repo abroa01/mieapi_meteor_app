@@ -13,6 +13,8 @@ const MainComponent = () => {
   useEffect(() => {
     const storedUserHandle = Session.get('userHandle');
     const storedCookie = Session.get('userCookie');
+
+    console.log(storedUserHandle, storedCookie);
     
     if (storedUserHandle && storedCookie) {
       setUserHandle(storedUserHandle);
@@ -23,13 +25,13 @@ const MainComponent = () => {
 
   const handleSaveUserHandle = (newUserHandle) => {
     setUserHandle(newUserHandle);
-    Session.set('userHandle', newUserHandle);
+    Session.set('userHandle', newUserHandle); // Do we need to save the session using userHandle ?
     setCurrentPage('login');
   };
 
   const handleLogin = (newCookie) => {
     setCookie(newCookie);
-    Session.set('userCookie', newCookie);
+    Session.set('userCookie', newCookie); // need to check this ?
     setCurrentPage('api');
   };
 
@@ -47,13 +49,13 @@ const MainComponent = () => {
         return <HomeComponent saveUserHandle={handleSaveUserHandle} />;
       case 'login':
         return <LoginComponent
-          setCredentials={setCredentials}
+          setCredentials={setCredentials} // do we need this ??
           onLogin={handleLogin}
           userHandle={userHandle}
         />;
       case 'api':
         return <ApiComponent 
-          credentials={credentials}
+          credentials={credentials} // do we need this ??
           cookie={cookie}
           userHandle={userHandle}
           onLogout={handleLogout}
