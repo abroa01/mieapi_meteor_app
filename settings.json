@@ -1,0 +1,7 @@
+{
+    "galaxy.meteor.com": {
+    "env": {
+      "MONGO_URL": "mongodb+srv://abrolanshul10:qyksyf-bInqaz-sonpu0@projects.erjalqh.mongodb.net/?retryWrites=true&w=majority&appName=Projects"
+    }
+  }
+}
