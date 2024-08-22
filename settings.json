@@ -1,7 +1,9 @@
 {
-    "galaxy.meteor.com": {
+  "galaxy.meteor.com": {
     "env": {
-      "MONGO_URL": "mongodb+srv://abrolanshul10:qyksyf-bInqaz-sonpu0@projects.erjalqh.mongodb.net/?retryWrites=true&w=majority&appName=Projects"
+      "ENV": "staging",
+      "MONGO_URL": "mongodb+srv://abrolanshul10:qyksyf-bInqaz-sonpu0@projects.erjalqh.mongodb.net/?retryWrites=true&w=majority&appName=Projects",
+      "MONGO_OPLOG_URL": "mongodb+srv://abroaReadOnly:abroaReadOnly_Password123@projects.erjalqh.mongodb.net/?retryWrites=true&w=majority&appName=Projects"
     }
   }
 }
