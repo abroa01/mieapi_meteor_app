@@ -46,7 +46,7 @@ async function checkPassword(user, password) {
 
     const status = response.headers.get('x-lg_status');
     console.log(status);
-    if (!status == 'success') {
+    if (status == 'failed') {
       return { failed, message: failed };
       
     } else {
@@ -97,7 +97,7 @@ async function authenticateExistingUser(user, password) {
   try {
     const result = await checkPassword(user, password);
     console.log(result);
-    if (!result) {
+    if (result == 'failed') {
       Logger.warn('Invalid credentials', { userId: user._id, username: user.username });
       return { success: false, message: 'Invalid credentials' };
     }
