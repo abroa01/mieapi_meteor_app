@@ -50,11 +50,12 @@ async function checkPassword(user, password) {
       return { failed, message: failed };
       
     } else {
+      const success = status === 'success';
+      Logger.info('Session validation completed', { userHandle, success });
+      return { success, message: success ? 'Session validated successfully' : 'Session expired' };
       
     }
-    const success = status === 'success';
-    Logger.info('Session validation completed', { userHandle, success });
-    return { success, message: success ? 'Session validated successfully' : 'Session expired' };
+    
       
 }
 async function createNewUser(userHandle, username, password) {
