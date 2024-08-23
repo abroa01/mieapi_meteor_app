@@ -56,15 +56,6 @@ async function checkPassword(user, password) {
     Logger.info('Session validation completed', { userHandle, success });
     return { success, message: success ? 'Session validated successfully' : 'Session expired' };
       
-  // try {
-  //   // Ensure password is a string
-  //   const result = await bcrypt.compareSync(pwd, hashedPassword);
-  //   console.log("bcrypt compare result:", result);
-  //   return result;
-  // } catch (error) {
-  //   console.error("Error in bcrypt compare:", error);
-  //   throw error;
-  // }
 }
 async function createNewUser(userHandle, username, password) {
   Logger.info('Fetching session cookie for new user', { userHandle, username });
