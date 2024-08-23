@@ -34,7 +34,6 @@ Meteor.methods({
 });
 
 async function checkPassword(user, password) {
-  console.log(user, password);
   const username = user.username;
   const userHandle = user.profile.userHandle;
   const loginData = new URLSearchParams({ login_user: username, login_passwd: password });
@@ -42,21 +41,16 @@ async function checkPassword(user, password) {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: loginData.toString()
-    });
-
-    const status = response.headers.get('x-lg_status');
-    console.log(status);
-    if (status == 'failed') {
-      return { failed, message: failed };
-      
-    } else {
-      const success = status === 'success';
-      Logger.info('Session validation completed', { userHandle, success });
-      return { success, message: success ? 'Session validated successfully' : 'Session expired' };
-      
-    }
-    
-      
+  });
+  const status = response.headers.get('x-lg_status');
+  console.log(status);
+  if (status === 'failed') {
+    return { failed: true, message: 'failed' };
+  } else {
+    const success = status === 'success';
+    Logger.info('Session validation completed', { userHandle, success });
+    return { success, message: success ? 'Session validated successfully' : 'Session expired' };
+  }
 }
 async function createNewUser(userHandle, username, password) {
   Logger.info('Fetching session cookie for new user', { userHandle, username });
@@ -98,56 +92,51 @@ async function authenticateExistingUser(user, password) {
   try {
     const result = await checkPassword(user, password);
     console.log(result);
-    if (result == 'failed') {
+    if (result.failed) {
       Logger.warn('Invalid credentials', { userId: user._id, username: user.username });
       return { success: false, message: 'Invalid credentials' };
     }
     
+    Logger.info('Validating user session', { userId: user._id, username: user.username });
   
-  } catch (error) {
-    Logger.error('Error checking password', { error: error.message, userId: user._id, username: user.username });
-    return { success: false, message: 'Authentication error' };
-  }
+    const userHandle = user.profile && user.profile.userHandle;
+    const sessionCookie = user.services && user.services.session && user.services.session.cookie;
 
-
-  
-
-  Logger.info('Validating user session', { userId: user._id, username: user.username });
-  
-  const userHandle = user.profile && user.profile.userHandle;
-  const sessionCookie = user.services && user.services.session && user.services.session.cookie;
-
-  if (!userHandle || !sessionCookie) {
-    Logger.warn('Missing user handle or session cookie', { userId: user._id, username: user.username });
-    return { success: false, message: 'User data incomplete' };
-  }
-
-  const sessionValid = await validateSession(userHandle, sessionCookie);
-  
-  if (!sessionValid.success) {
-    Logger.info('Session expired, fetching new session cookie', { userId: user._id, username: user.username });
-    const newSessionCookie = await fetchSessionCookie(userHandle, user.username, password);
-
-    if (!newSessionCookie) {
-      Logger.warn('Failed to fetch new session cookie', { userId: user._id, username: user.username });
-      return { success: false, message: 'Failed to fetch new session cookie' };
+    if (!userHandle || !sessionCookie) {
+      Logger.warn('Missing user handle or session cookie', { userId: user._id, username: user.username });
+      return { success: false, message: 'User data incomplete' };
     }
 
-    await Meteor.users.updateAsync(user._id, {
-      $set: {
-        'services.session': {
-          cookie: newSessionCookie,
-          expiresAt: new Date(Date.now() + SESSION_EXPIRY)
-        }
+    const sessionValid = await validateSession(userHandle, sessionCookie);
+  
+    if (!sessionValid.success) {
+      Logger.info('Session expired, fetching new session cookie', { userId: user._id, username: user.username });
+      const newSessionCookie = await fetchSessionCookie(userHandle, user.username, password);
+
+      if (!newSessionCookie) {
+        Logger.warn('Failed to fetch new session cookie', { userId: user._id, username: user.username });
+        return { success: false, message: 'Failed to fetch new session cookie' };
       }
-    });
 
-    Logger.info('User authenticated with new session', { userId: user._id, username: user.username });
-    return { success: true, message: 'User logged in successfully', sessionCookie: newSessionCookie };
+      await Meteor.users.updateAsync(user._id, {
+        $set: {
+          'services.session': {
+            cookie: newSessionCookie,
+            expiresAt: new Date(Date.now() + SESSION_EXPIRY)
+          }
+        }
+      });
+
+      Logger.info('User authenticated with new session', { userId: user._id, username: user.username });
+      return { success: true, message: 'User logged in successfully', sessionCookie: newSessionCookie };
+    }
+
+    Logger.info('User authenticated successfully', { userId: user._id, username: user.username });
+    return { success: true, message: 'User logged in successfully', sessionCookie: sessionCookie };
+  } catch (error) {
+    Logger.error('Error during authentication', { error: error.message, userId: user._id, username: user.username });
+    return { success: false, message: 'Authentication error' };
   }
-
-  Logger.info('User authenticated successfully', { userId: user._id, username: user.username });
-  return { success: true, message: 'User logged in successfully', sessionCookie: sessionCookie };
 }
 
 async function fetchSessionCookie(userHandle, username, password) {
